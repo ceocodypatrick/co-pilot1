@@ -1,6 +1,6 @@
 
 
-import React, { FC, PropsWithChildren, Component, ErrorInfo, ReactNode } from 'react';
+import React, { FC, PropsWithChildren, Component, ErrorInfo } from 'react';
 import ReactDOM from 'react-dom/client';
 
 
@@ -436,8 +436,7 @@ const fileToBase64 = (file: File): Promise<string> => {
 // ERROR BOUNDARY
 //================================================================
 class ErrorBoundary extends Component<PropsWithChildren<{}>, { hasError: boolean; error?: Error }> {
-  // Fix: Initialize state as a class property to avoid issues with `this` context.
-  state = { hasError: false, error: undefined as Error | undefined };
+  state = { hasError: false, error: undefined };
 
   static getDerivedStateFromError(error: Error) {
     return { hasError: true, error };
@@ -489,7 +488,12 @@ const App: FC = () => {
 //================================================================
 // RENDER APP
 //================================================================
-const root = ReactDOM.createRoot(document.getElementById('root')!);
+const rootElement = document.getElementById('root');
+if (!rootElement) {
+  throw new Error('Root element not found. Ensure index.html contains a <div id="root"></div> element.');
+}
+
+const root = ReactDOM.createRoot(rootElement);
 root.render(
   <React.StrictMode>
     <App />
