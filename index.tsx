@@ -1,9 +1,7 @@
 
 
-import React, { useState, useCallback, useEffect, useRef, FC, PropsWithChildren, Component, ErrorInfo, ReactNode, createContext, useReducer, useContext, useMemo, ChangeEvent, KeyboardEvent } from 'react';
+import React, { FC, PropsWithChildren, Component, ErrorInfo } from 'react';
 import ReactDOM from 'react-dom/client';
-import { GoogleGenAI, Type, GenerateContentResponse, Chat } from "@google/genai";
-import { marked } from 'https://esm.sh/marked@13.0.0';
 
 
 // Note: In a real environment, you would install these dependencies.
@@ -438,8 +436,7 @@ const fileToBase64 = (file: File): Promise<string> => {
 // ERROR BOUNDARY
 //================================================================
 class ErrorBoundary extends Component<PropsWithChildren<{}>, { hasError: boolean; error?: Error }> {
-  // Fix: Initialize state as a class property to avoid issues with `this` context.
-  state = { hasError: false, error: undefined as Error | undefined };
+  state = { hasError: false, error: undefined };
 
   static getDerivedStateFromError(error: Error) {
     return { hasError: true, error };
@@ -452,4 +449,53 @@ class ErrorBoundary extends Component<PropsWithChildren<{}>, { hasError: boolean
   render() {
     if (this.state.hasError) {
       return (
-        <div className="p-4 bg-red-90
+        <div className="p-4 bg-red-900 text-white rounded-lg">
+          <h2 className="text-xl font-bold mb-2">Something went wrong</h2>
+          <details className="mt-2">
+            <summary className="cursor-pointer">Error details</summary>
+            <pre className="mt-2 text-sm overflow-auto">{this.state.error?.message}</pre>
+          </details>
+        </div>
+      );
+    }
+
+    return this.props.children;
+  }
+}
+
+
+//================================================================
+// MAIN APP COMPONENT
+//================================================================
+const App: FC = () => {
+  return (
+    <ErrorBoundary>
+      <div className="min-h-screen bg-gray-900 text-gray-100 p-8">
+        <div className="max-w-4xl mx-auto">
+          <h1 className="text-4xl font-bold mb-8 text-center">ORGANIC DON'T PANIC</h1>
+          <p className="text-center text-gray-400 mb-8">Music Industry Assistant (In Development)</p>
+          <div className="bg-gray-800 p-6 rounded-lg">
+            <p className="text-center">Welcome! This application is being developed.</p>
+            <p className="text-center text-sm text-gray-500 mt-4">Check back soon for AI-powered music industry features.</p>
+          </div>
+        </div>
+      </div>
+    </ErrorBoundary>
+  );
+};
+
+
+//================================================================
+// RENDER APP
+//================================================================
+const rootElement = document.getElementById('root');
+if (!rootElement) {
+  throw new Error('Root element not found. Ensure index.html contains a <div id="root"></div> element.');
+}
+
+const root = ReactDOM.createRoot(rootElement);
+root.render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
+);
