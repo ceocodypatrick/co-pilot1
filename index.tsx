@@ -452,4 +452,47 @@ class ErrorBoundary extends Component<PropsWithChildren<{}>, { hasError: boolean
   render() {
     if (this.state.hasError) {
       return (
-        <div className="p-4 bg-red-90
+        <div className="p-4 bg-red-900 text-white rounded-lg">
+          <h2 className="text-xl font-bold mb-2">Something went wrong</h2>
+          <details className="mt-2">
+            <summary className="cursor-pointer">Error details</summary>
+            <pre className="mt-2 text-sm overflow-auto">{this.state.error?.message}</pre>
+          </details>
+        </div>
+      );
+    }
+
+    return this.props.children;
+  }
+}
+
+
+//================================================================
+// MAIN APP COMPONENT
+//================================================================
+const App: FC = () => {
+  return (
+    <ErrorBoundary>
+      <div className="min-h-screen bg-gray-900 text-gray-100 p-8">
+        <div className="max-w-4xl mx-auto">
+          <h1 className="text-4xl font-bold mb-8 text-center">ORGANIC DON'T PANIC</h1>
+          <p className="text-center text-gray-400 mb-8">AI-powered music industry assistant</p>
+          <div className="bg-gray-800 p-6 rounded-lg">
+            <p className="text-center">Welcome! This application is ready to use.</p>
+          </div>
+        </div>
+      </div>
+    </ErrorBoundary>
+  );
+};
+
+
+//================================================================
+// RENDER APP
+//================================================================
+const root = ReactDOM.createRoot(document.getElementById('root')!);
+root.render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
+);
